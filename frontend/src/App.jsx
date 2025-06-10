@@ -1,35 +1,39 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import BuscaCidade from './components/BuscaCidade'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [resultados, setResultados] = useState([])
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div style={{ maxWidth: 600, margin: '2rem auto', padding: '0 1rem' }}>
+      <h1>Previsão do Tempo</h1>
+      <BuscaCidade onResultados={setResultados} />
+
+      <div style={{ marginTop: '1.5rem' }}>
+        {resultados.length === 0 && <p>Nenhuma previsão para mostrar</p>}
+        {resultados.map((item, i) => (
+          <div key={i} style={{
+            border: '1px solid #ccc',
+            borderRadius: 6,
+            padding: '0.75rem',
+            marginBottom: '0.75rem',
+            display: 'flex',
+            gap: '1rem'
+          }}>
+            <img
+              src={`http://openweathermap.org/img/wn/${item.icone}@2x.png`}
+              alt={item.descricao}
+              style={{ width: 50, height: 50 }}
+            />
+            <div>
+              <div><strong>Min:</strong> {item.temperatura_minima}°C</div>
+              <div><strong>Max:</strong> {item.temperatura_maxima}°C</div>
+              <div><strong>Umidade:</strong> {item.umidade}%</div>
+              <div><strong>Descrição:</strong> {item.descricao}</div>
+            </div>
+          </div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
-
-export default App

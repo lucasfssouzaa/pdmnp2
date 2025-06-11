@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect} from 'react'
 import axios from 'axios'
 
 export default function BuscaCidade({ onResultados }) {
   const [cidade, setCidade] = useState('São Paulo')
-  const tempoEspera = useRef(null)
 
   useEffect(() => {
     if (cidade.length < 3) {
@@ -11,16 +10,14 @@ export default function BuscaCidade({ onResultados }) {
       return
     }
 
-    if (tempoEspera.current) clearTimeout(tempoEspera.current)
+    const timer = setTimeout(() => {
+    axios
+      .get(`http://localhost:3001/previsoes?cidade=${encodeURIComponent(cidade)}`)
+      .then(res => onResultados(res.data))
+      .catch(() => onResultados([]))
+  }, 2000)
 
-    tempoEspera.current = setTimeout(() => {
-    //   axios.get(`http://localhost:3001/previsoes/${cidade}`)
-    axios.get(`http://localhost:3001/previsoes?cidade=${encodeURIComponent(cidade)}`)
-        .then(res => onResultados(res.data))
-        .catch(() => onResultados([]))
-    }, 2000)
-
-    return () => clearTimeout(tempoEspera.current)
+  return () => clearTimeout(timer)
   }, [cidade])
 
   return (
